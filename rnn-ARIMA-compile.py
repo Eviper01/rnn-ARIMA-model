@@ -6,6 +6,8 @@ import json
 import requests
 from lxml import html
 import math
+from sklearn.preprocessing import MinMaxScaler
+sc = MinMaxScaler()
 # def get_data():
 #     print("Fetching Data")
 #     url = "https://min-api.cryptocompare.com/data/v2/histominute?fsym=BTC&tsym=USDT&e=BINANCE&aggregate=1&limit=2000&extraParams=PercepertronTrading&api_key=1a95b1abb57132503433dd9be659f9bc7c9c2f7a27f1cf78c0ceb89e59ee6e61"
@@ -24,21 +26,25 @@ import math
 # df_test= Real_Price[len(Real_Price)-prediction_days:]
 # # # Data preprocess
 # ## NEW PROCESSING GET 10 Last DATA POINTS IN A MATRIX --> Predict 10 next prices
-df = pd.read_csv("db.csv")
+df = (pd.read_csv("db.csv")).iloc[:,0:8]
+# print(df)
+# fit transform the training data before it is sepreated
+df = sc.fit_transform(df)
+# print(df)
 x_values = []
 y_values = []
 for i in range(int((math.floor(len(df)/60)*60)/60)):
     #input matrix
-    x_values.append(df.iloc[60*i:60*i+50,2:7])
+    x_values.append(df[60*i:60*i+50,2:7])
     #output matrix
-    y_values.append(df.iloc[(i+1)*60 - 10:(i+1)*60,2:3].values)
+    y_values.append(df[(i+1)*60 - 10:(i+1)*60,2:3])
 print("db organised")
 x_values = np.stack(x_values)
 y_values = np.squeeze(np.stack(y_values))
-print(x_values)
+# print(x_values)
 X_train = x_values
 y_train = y_values
-print(y_train)
+# print(y_train)
 #X_train = np.reshape(X_train, (len(X_train), 1, 1))
 # Importing the Keras libraries and packages
 import os
@@ -53,7 +59,7 @@ from keras.layers import LSTM
 regressor = Sequential()
 
 # Adding the input layer and the LSTM layer --
-regressor.add(LSTM(units = 32, activation = 'sigmoid', input_shape = (50, 5)))
+regressor.add(LSTM(units = 8, activation = 'sigmoid', input_shape = (50, 5)))
 
 # Adding the output layer
 regressor.add(Dense(units = 10))

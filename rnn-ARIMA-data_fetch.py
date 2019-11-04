@@ -17,4 +17,4 @@ for i in range(6):
     df = get_data(df[0]["time"]) + df
 df = pd.DataFrame(df)
 print(df)
-df.to_csv("db-"+str(time.time()+".csv"))
+df.to_csv("db-"+str(int(time.time()))+".csv")
