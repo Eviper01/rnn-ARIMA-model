@@ -5,7 +5,8 @@ import os
 os.environ['KERAS_BACKEND'] = 'theano'
 from sklearn.preprocessing import MinMaxScaler
 sc = MinMaxScaler()
-df = (pd.read_csv("db.csv")).iloc[:,0:8]
+#df = (pd.read_csv("db.csv")).iloc[:,0:8] #using the main db --> ad something to fetch the data directly
+df = (pd.read_csv("current.csv")).iloc[:,0:8]
 df = sc.fit_transform(df)
 import keras
 x_values = np.array(df[len(df)-50:len(df),2:7])

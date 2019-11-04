@@ -68,7 +68,7 @@ regressor.add(Dense(units = 10))
 regressor.compile(optimizer = 'adam', loss = 'mean_squared_error')
 
 # Fitting the RNN to the Training set
-regressor.fit(X_train, y_train, batch_size = 3, epochs = 5)
+regressor.fit(X_train, y_train, batch_size = 3, epochs = 50)
 
 # # Making the predictions
 # test_set = df_test.values
