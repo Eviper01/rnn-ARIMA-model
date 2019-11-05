@@ -4,18 +4,27 @@ from matplotlib import pyplot as plt
 import os
 os.environ['KERAS_BACKEND'] = 'theano'
 from sklearn.preprocessing import MinMaxScaler
-sc = MinMaxScaler()
+sc = {}
 #df = (pd.read_csv("db.csv")).iloc[:,0:8] #using the main db --> ad something to fetch the data directly
 df = (pd.read_csv("current.csv")).iloc[:,0:8]
-df = sc.fit_transform(df)
+df = np.array(df)
+for  (i,k) in enumerate(df.T):
+    sc[i] = MinMaxScaler()
+
+    k = np.reshape(k,(-1,1))
+
+    k = sc[i].fit_transform(k)
+    k = np.squeeze(k)
+    print(k)
+    df[:,i] = k
 import keras
-x_values = np.array(df[len(df)-50:len(df),2:7])
+x_values = (df[len(df)-50:len(df),2:7])
 regressor = keras.models.load_model("reg.h5")
 x_values = np.reshape(x_values,(1,50,5))
 out = np.reshape(regressor.predict(x_values).flatten(),(-1,1))
 dummy_data = np.empty((10,7))
 out = np.append(out,dummy_data,axis=1)
-out = sc.inverse_transform(out)
+out = sc[2].inverse_transform(out)
 print(out[:,0])
 out = out[:,0].tolist()
 

@@ -7,7 +7,7 @@ import requests
 from lxml import html
 import math
 from sklearn.preprocessing import MinMaxScaler
-sc = MinMaxScaler()
+sc = {}
 # def get_data():
 #     print("Fetching Data")
 #     url = "https://min-api.cryptocompare.com/data/v2/histominute?fsym=BTC&tsym=USDT&e=BINANCE&aggregate=1&limit=2000&extraParams=PercepertronTrading&api_key=1a95b1abb57132503433dd9be659f9bc7c9c2f7a27f1cf78c0ceb89e59ee6e61"
@@ -27,9 +27,20 @@ sc = MinMaxScaler()
 # # # Data preprocess
 # ## NEW PROCESSING GET 10 Last DATA POINTS IN A MATRIX --> Predict 10 next prices
 df = (pd.read_csv("db.csv")).iloc[:,0:8]
-# print(df)
+df = np.array(df)
+for  (i,k) in enumerate(df.T):
+    sc[i] = MinMaxScaler()
+
+    k = np.reshape(k,(-1,1))
+
+    k = sc[i].fit_transform(k)
+    k = np.squeeze(k)
+    print(k)
+    df[:,i] = k
+
 # fit transform the training data before it is sepreated
-df = sc.fit_transform(df)
+# df = sc.fit_transform(df)
+print(df)
 # print(df)
 x_values = []
 y_values = []
@@ -44,6 +55,7 @@ y_values = np.squeeze(np.stack(y_values))
 # print(x_values)
 X_train = x_values
 y_train = y_values
+print(X_train)
 # print(y_train)
 #X_train = np.reshape(X_train, (len(X_train), 1, 1))
 # Importing the Keras libraries and packages
