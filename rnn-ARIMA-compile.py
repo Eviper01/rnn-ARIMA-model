@@ -27,6 +27,7 @@ sc = {}
 # # # Data preprocess
 # ## NEW PROCESSING GET 10 Last DATA POINTS IN A MATRIX --> Predict 10 next prices
 df = (pd.read_csv("db.csv")).iloc[:,0:8]
+print(df)
 df = np.array(df)
 for  (i,k) in enumerate(df.T):
     sc[i] = MinMaxScaler()
@@ -48,10 +49,13 @@ for i in range(int((math.floor(len(df)/60)*60)/60)):
     #input matrix
     x_values.append(df[60*i:60*i+50,2:7])
     #output matrix
-    y_values.append(df[(i+1)*60 - 10:(i+1)*60,2:3])
+    y_values.append(df[(i+1)*60 - 10:(i+1)*60,2])
 print("db organised")
 x_values = np.stack(x_values)
+
+print("YEET")
 y_values = np.squeeze(np.stack(y_values))
+print(y_values)
 # print(x_values)
 X_train = x_values
 y_train = y_values
@@ -80,7 +84,7 @@ regressor.add(Dense(units = 10))
 regressor.compile(optimizer = 'adam', loss = 'mean_squared_error')
 
 # Fitting the RNN to the Training set
-regressor.fit(X_train, y_train, batch_size = 3, epochs = 50)
+regressor.fit(X_train, y_train, batch_size = 3, epochs = 10)
 
 # # Making the predictions
 # test_set = df_test.values
